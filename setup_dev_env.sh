@@ -78,6 +78,20 @@ function install_kubectl_autocomplete() {
   fi
 }
 
+function add_kind_alias_cmder() {
+
+  echo "Trying to add kind alias to cmder"
+
+  ## If cmder is installed then add alias for kind to have 'kind' prioritized over 'kind.exe'
+  local cmderDir
+  cmderDir="$(command type -P cmder)"
+  if [ -n "$cmderDir" ]; then
+    local cmderUserProfile
+    cmderUserProfile="$(echo $cmderDir | sed 's/\(.*\)cmder/\1config\/user-profile.sh/')"
+    echo "alias kind=kind" >>$cmderUserProfile
+  fi
+}
+
 function install_kubectl() {
 
   ## Checks if kubectl is installed
@@ -144,6 +158,8 @@ function install_kind() {
       add_to_bashrc "export PATH=\"$HOME/kind:$PATH\""
       add_to_zshrc "export PATH=\"$HOME/kind:$PATH\""
     fi
+
+    add_kind_alias_cmder
 
     ## Prints kind version
     kind --version
